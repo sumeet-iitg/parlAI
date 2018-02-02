@@ -1,0 +1,41 @@
+The most basic concept in ParlAI is an Agent, Agents can be humans, a simple bot which repeats back anything that it hears, your perfectly-tuned neural network, a dataset being read out, or anything else that might send messages or interact with its environment.
+Agent must define:
+
+def observe(self, observation) : notifies the agent of an action taken by another agent.
+def act(self) : produces an action from the agent.
+
+======================================
+Try to run local human with some task
+
+python examples/eval_model.py -m local_human -t babi:Task1k:1 -dt valid
+========DONE! ========================
+
+======================================
+Write my own agent
+1. create_agent should be able to load my agent module using import_module
+	Python Module Naming convention. For now, copy the way other agents have been built
+2. However, once the agent is created, how does it integrate with the world
+	World object takes in the type of task(s) and type of agent(s).
+	For single task, DialoguePartnerWorld is created.
+
+
+What constitutes an environment/world?
+	World and Task Object. 
+	World is created by create_world of different types
+	Task by create_task_agent. Specifically it calls the create_agent function of the corresponding task's agent.py file.
+	However, if it doesn't exist then create_task_agent_from_taskname of core\agents.py is called which implements a teacher object, by default a DefaultTeacher object is created.
+	World object will implement it's parley method that dictates how the agents are supposed to interact
+	The script you write will execute world.parley()
+
+For Dialogue_QE:
+	DefaultTeacher is DialogueTeacher. It utilizes a class called DialogueData which provides a data structure for accessing textual dialog data.
+		This can be used whenever the dialog data is a fixed log of chats
+		(i.e not a simulator setting). The logs can include dialog text and possibly
+		supervised labels, candidate labels and rewards.
+	It is here in DialogueData load where Dialogue_QE's setup_data is getting called and we are screwed
+	
+	World is DialoguePartnerWorld
+
+======================================
+How are you training the dialog agent model? How does it output depending on some input you provide.
+	Explore chit-chat task?
